@@ -11,8 +11,9 @@ from napari.utils import Colormap
 from napari.utils.notifications import NotificationSeverity
 from pydantic import BaseModel
 
-from nme._class_register import class_to_str, register_class, rename_key
-from nme._json_hooks import NMEEncoder, add_class_info, nme_object_hook
+from nme import register_class, rename_key, nme_object_hook, NMEEncoder
+from nme._class_register import class_to_str
+from nme._json_hooks import add_class_info
 
 
 @dataclass
