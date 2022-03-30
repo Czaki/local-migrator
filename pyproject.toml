@@ -1,0 +1,84 @@
+[project]
+name = "nme"
+description = "Lovely Spam! Wonderful Spam!"
+readme = "README.rst"
+requires-python = ">=3.7"
+license = {file = "LICENSE.txt"}
+keywords = ["napari", "migration", "persistance"]
+version="0.1.0"
+authors = [
+  {email = "g.bokota@uw.edu.pl"},
+  {name = "Grzegorz Bokota"}
+]
+maintainers = [
+  {name = "Grzegorz Bokota", email = "g.bokota@uw.edu.pl"}
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python"
+]
+
+dependencies = [
+  "packaging",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest > 7.0.0",
+  "pytest-cov[all]",
+  "pydantic",
+  "numpy",
+  "napari"
+]
+
+[project.urls]
+homepage = "https://github.com/Czaki/nme"
+documentation = "https://github.com/Czaki/nme"
+repository = "https://github.com/Czaki/nme"
+
+[build-system]
+# Minimum requirements for the build system to execute.
+requires = ["setuptools>=61.0.0", "wheel>=0.37.0", "setuptools_scm[toml]>=6.4"]  # PEP 508 specifications.
+build-backend = "setuptools.build_meta"
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=nme"
+testpaths = [
+    "src/tests",
+]
+
+[tool.setuptools_scm]
+write_to = "src/nme/version.py"
+
+[tool.black]
+line-length = 120
+target-version = ['py36']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+  | package/PartSeg/version.py
+)
+'''
+
+[tool.isort]
+line_length=120
+known_first_party=['nme']
+profile="black"
+src_paths=["packsrcage"]
