@@ -11,7 +11,7 @@ from napari.utils import Colormap
 from napari.utils.notifications import NotificationSeverity
 from pydantic import BaseModel
 
-from nme import register_class, rename_key, nme_object_hook, NMEEncoder
+from nme import NMEEncoder, nme_object_hook, register_class, rename_key
 from nme._class_register import class_to_str
 from nme._json_hooks import add_class_info
 
@@ -35,6 +35,7 @@ class SampleAsDict:
 
     def as_dict(self):
         return {"value1": self.value1, "value2": self.value2}
+
 
 class RadiusType(Enum):
     NO = 0
@@ -78,13 +79,13 @@ def test_colormap_dump(tmp_path):
     assert np.array_equal(cmap_list[1].colors[-1], cmap_list2[1].colors[-1])
 
 
-
 @pytest.mark.parametrize("dtype", [np.uint8, np.uint16, np.uint32, np.float32, np.float64])
 def test_dump_numpy_types(dtype):
     data = {"a": dtype(2)}
     text = json.dumps(data, cls=NMEEncoder)
     loaded = json.loads(text)
     assert loaded["a"] == 2
+
 
 class TestNMEEncoder:
     def test_enum_serialize(self, tmp_path):
@@ -175,32 +176,37 @@ def test_add_class_info_enum(clean_register):
     assert len(dkt["__class_version_dkt__"]) == 1
     assert dkt["__class_version_dkt__"][class_to_str(SampleEnum)] == "0.0.0"
 
+
 def test_path_serialization(tmp_path):
     with (tmp_path / "test.json").open("w") as f_p:
         json.dump(Path(), f_p, cls=NMEEncoder)
     with (tmp_path / "test.json").open("r") as f_p:
-        data  = json.load(f_p, object_hook=nme_object_hook)
+        data = json.load(f_p, object_hook=nme_object_hook)
     assert str(Path()) == data
+
 
 def test_error_deserialization(clean_register, tmp_path):
     class SampleEnum(Enum):
         field = 1
 
     with (tmp_path / "test.json").open("w") as f_p:
-        f_p.write('{"value": 1, "__class__": "test_json_hooks.test_error_deserialization.<locals>.SampleEnum", "__class_version_dkt__": {"test_json_hooks.test_error_deserialization.<locals>.SampleEnum": "0.0.0"}}')
+        f_p.write(
+            '{"value": 1, "__class__": "test_json_hooks.test_error_deserialization.<locals>.SampleEnum",'
+            '"__class_version_dkt__": {"test_json_hooks.test_error_deserialization.<locals>.SampleEnum": "0.0.0"}}'
+        )
     with (tmp_path / "test.json").open("r") as f_p:
         data2 = json.load(f_p, object_hook=nme_object_hook)
     assert "__error__" in data2
 
-    register_class(SampleEnum)    
+    register_class(SampleEnum)
 
     with (tmp_path / "test2.json").open("w") as f_p:
         json.dump(data2, f_p, cls=NMEEncoder)
 
     with (tmp_path / "test2.json").open("r") as f_p:
         data3 = json.load(f_p, object_hook=nme_object_hook)
-    
-    assert data3 == SampleEnum.field   
+
+    assert data3 == SampleEnum.field
 
 
 class TestPartSegObjectHook:

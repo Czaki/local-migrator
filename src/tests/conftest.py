@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def clean_register():
     from nme._json_hooks import REGISTER

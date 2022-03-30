@@ -1,7 +1,6 @@
 import dataclasses
 import enum
 import json
-from os import execv
 from pathlib import Path
 
 import numpy as np
@@ -12,18 +11,19 @@ try:
     from pydantic import BaseModel
 except ImportError:  # pragma: no cover
     # allow to use in environment without pydantic.
-    class BaseModel:
+    class BaseModel:  # type: ignore
         pass
+
 
 try:
     from numpy import ndarray
 except ImportError:  # pragma: no cover
     # allow to use in environment without numpy.
-    class ndarray:
+    class ndarray:  # type: ignore
         pass
 
 
-def add_class_info(obj, dkt):
+def add_class_info(obj: type, dkt: dict) -> dict:
     dkt["__class__"] = class_to_str(obj.__class__)
     dkt["__class_version_dkt__"] = {
         class_to_str(sup_obj): str(REGISTER.get_version(sup_obj))
@@ -59,7 +59,7 @@ class NMEEncoder(json.JSONEncoder):
             try:
                 dkt = dict(o)
             except (ValueError, TypeError):
-                dkt = o.dict() # workaround for napari Colormap class 
+                dkt = o.dict()  # workaround for napari Colormap class
             return add_class_info(o, dkt)
 
         if hasattr(o, "as_dict"):
