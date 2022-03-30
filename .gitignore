@@ -1,6 +1,8 @@
 .python-version
 htmlcov
 .vscode
+src/nme/version.py
+
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,pycharm+all
 

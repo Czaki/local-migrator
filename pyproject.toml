@@ -5,7 +5,6 @@ readme = "README.rst"
 requires-python = ">=3.7"
 license = {file = "LICENSE.txt"}
 keywords = ["napari", "migration", "persistance"]
-version="0.1.0"
 authors = [
   {email = "g.bokota@uw.edu.pl"},
   {name = "Grzegorz Bokota"}
@@ -20,6 +19,9 @@ classifiers = [
 
 dependencies = [
   "packaging",
+]
+dynamic = [
+    "version",
 ]
 
 [project.optional-dependencies]
