@@ -42,37 +42,44 @@ def add_class_info(obj: type, dkt: dict) -> dict:
     return dkt
 
 
+def nme_object_encoder(obj):
+    if isinstance(obj, enum.Enum):
+        dkt = {"value": obj.value}
+        return add_class_info(obj, dkt)
+    if dataclasses.is_dataclass(obj):
+        fields = dataclasses.fields(obj)
+        dkt = {x.name: getattr(obj, x.name) for x in fields}
+        return add_class_info(obj, dkt)
+
+    if isinstance(obj, ndarray):
+        return obj.tolist()
+
+    if isinstance(obj, BaseModel):
+        try:
+            dkt = dict(obj)
+        except (ValueError, TypeError):
+            dkt = obj.dict()  # workaround for napari Colormap class
+        return add_class_info(obj, dkt)
+
+    if hasattr(obj, "as_dict"):
+        dkt = obj.as_dict()
+        return add_class_info(obj, dkt)
+
+    if isinstance(obj, np.integer):
+        return int(obj)
+    if isinstance(obj, np.floating):
+        return float(obj)
+    if isinstance(obj, Path):
+        return str(obj)
+    return None
+
+
 class NMEEncoder(json.JSONEncoder):
     def default(self, o):
-        if isinstance(o, enum.Enum):
-            dkt = {"value": o.value}
-            return add_class_info(o, dkt)
-        if dataclasses.is_dataclass(o):
-            fields = dataclasses.fields(o)
-            dkt = {x.name: getattr(o, x.name) for x in fields}
-            return add_class_info(o, dkt)
-
-        if isinstance(o, ndarray):
-            return o.tolist()
-
-        if isinstance(o, BaseModel):
-            try:
-                dkt = dict(o)
-            except (ValueError, TypeError):
-                dkt = o.dict()  # workaround for napari Colormap class
-            return add_class_info(o, dkt)
-
-        if hasattr(o, "as_dict"):
-            dkt = o.as_dict()
-            return add_class_info(o, dkt)
-
-        if isinstance(o, np.integer):
-            return int(o)
-        if isinstance(o, np.floating):
-            return float(o)
-        if isinstance(o, Path):
-            return str(o)
-        return super().default(o)  # pragma: no cover
+        val = nme_object_encoder(o)
+        if val is None:
+            return super().default(o)
+        return val
 
 
 def nme_object_hook(dkt: dict):

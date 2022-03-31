@@ -5,7 +5,10 @@ import pytest
 def clean_register():
     from nme._json_hooks import REGISTER
 
+    def clean():
+        REGISTER._data_dkt = {}
+
     old_dict = REGISTER._data_dkt
-    REGISTER._data_dkt = {}
-    yield
+    clean()
+    yield clean
     REGISTER._data_dkt = old_dict

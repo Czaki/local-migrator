@@ -69,7 +69,6 @@ class MigrationRegistration:
 
     def __init__(self):
         self._data_dkt: Dict[str, TypeInfo] = {}
-        self._parent_migrations: Dict[str, bool] = {}
 
     def register(
         self,

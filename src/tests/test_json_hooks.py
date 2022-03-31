@@ -42,9 +42,6 @@ class RadiusType(Enum):
     R2D = 1
     R3D = 2
 
-    def __str__(self):
-        return ["No", "2d", "3d"][self.value]
-
 
 def test_colormap_dump(tmp_path):
     cmap_list = [Colormap([(0, 0, 0), (1, 1, 1)]), Colormap([(0, 0, 0), (1, 1, 1)], controls=[0, 1])]
@@ -209,7 +206,7 @@ def test_error_deserialization(clean_register, tmp_path):
     assert data3 == SampleEnum.field
 
 
-class TestPartSegObjectHook:
+class TestNMEObjectHook:
     def test_no_inheritance_read(self, clean_register, tmp_path):
         @register_class(version="0.0.1", migrations=[("0.0.1", rename_key("field", "field1"))])
         class BaseClass(BaseModel):
@@ -224,10 +221,10 @@ class TestPartSegObjectHook:
         data_str = """
         {"field": 1, "field2": 5,
          "__class__":
-         "test_json_hooks.TestPartSegObjectHook.test_no_inheritance_read.<locals>.MainClass",
+         "test_json_hooks.TestNMEObjectHook.test_no_inheritance_read.<locals>.MainClass",
          "__class_version_dkt__": {
-         "test_json_hooks.TestPartSegObjectHook.test_no_inheritance_read.<locals>.MainClass": "0.0.0",
-         "test_json_hooks.TestPartSegObjectHook.test_no_inheritance_read.<locals>.BaseClass": "0.0.0"
+         "test_json_hooks.TestNMEObjectHook.test_no_inheritance_read.<locals>.MainClass": "0.0.0",
+         "test_json_hooks.TestNMEObjectHook.test_no_inheritance_read.<locals>.BaseClass": "0.0.0"
          }}
          """
 
