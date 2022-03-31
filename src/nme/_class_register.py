@@ -191,10 +191,10 @@ class MigrationRegistration:
         self.register(class_)
 
 
-# THe global instance of register is use because registration is performed on import time.
+# The global instance of register is use because registration is performed on import time.
 # There should no information storage for objects.
 REGISTER = MigrationRegistration()
-"""Default register to storage class information"""
+"""Default register to storage class information. Instance of :py:class:`MigrationRegistration`"""
 
 
 def rename_key(from_key: str, to_key: str, optional=False) -> MigrationCallable:

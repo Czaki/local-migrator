@@ -1,9 +1,8 @@
 import dataclasses
 import enum
 import json
+import typing
 from pathlib import Path
-
-import numpy as np
 
 from ._class_register import REGISTER, class_to_str
 
@@ -16,14 +15,20 @@ except ImportError:  # pragma: no cover
 
 
 try:
-    from numpy import ndarray
+    from numpy import floating, integer, ndarray
 except ImportError:  # pragma: no cover
     # allow to use in environment without numpy.
     class ndarray:  # type: ignore
         pass
 
+    class integer:  # type: ignore
+        pass
 
-def add_class_info(obj: type, dkt: dict) -> dict:
+    class floating:  # type: ignore
+        pass
+
+
+def add_class_info(obj: typing.Any, dkt: dict) -> dict:
     dkt["__class__"] = class_to_str(obj.__class__)
     dkt["__class_version_dkt__"] = {
         class_to_str(sup_obj): str(REGISTER.get_version(sup_obj))
@@ -42,7 +47,26 @@ def add_class_info(obj: type, dkt: dict) -> dict:
     return dkt
 
 
-def nme_object_encoder(obj):
+def nme_object_encoder(obj: typing.Any):
+    """
+    Function changing supported types to basic python types supported by most
+    serializers and which could be restored by :py:func:`nme_object_hook` function.
+
+    Supported types are:
+
+    * :py:class:`enum.Enum`
+    * :py:func:`dataclasses.dataclass`
+    * :py:class:`numpy.ndarray`
+    * :py:class:`pydantic.BaseModel`
+    * :py:class:`numpy.integer` (change to pure int)
+    * :py:class:`numpy.floating` (change to pure float)
+    * :py:class:`pathlib.Path` (Serialized to string)
+    * Any class with an ``as_dict`` method. This method should return a dictionary of valid constructor arguments.
+
+    :param obj: object to be encoded.
+    :return: encoded object for supported types. Otherwise ``None``.
+
+    """
     if isinstance(obj, enum.Enum):
         dkt = {"value": obj.value}
         return add_class_info(obj, dkt)
@@ -65,9 +89,9 @@ def nme_object_encoder(obj):
         dkt = obj.as_dict()
         return add_class_info(obj, dkt)
 
-    if isinstance(obj, np.integer):
+    if isinstance(obj, integer):
         return int(obj)
-    if isinstance(obj, np.floating):
+    if isinstance(obj, floating):
         return float(obj)
     if isinstance(obj, Path):
         return str(obj)
@@ -75,14 +99,31 @@ def nme_object_encoder(obj):
 
 
 class NMEEncoder(json.JSONEncoder):
+    """
+    JSONEncoder subclass for serializing Python objects into JSON.
+    For list of supported types check :py:func:`nme_object_encoder` function.
+    """
+
     def default(self, o):
+        """
+        Implementation that calls :py:func:`nme_object_encoder` function.
+        """
         val = nme_object_encoder(o)
         if val is None:
             return super().default(o)
         return val
 
 
-def nme_object_hook(dkt: dict):
+def nme_object_hook(dkt: dict) -> typing.Any:
+    """
+    Function restoring supported types from :py:func:`nme_object_encoder` function output.
+
+    If ``dkt`` does not contain ``__class__`` key, it is returned as is.
+
+    If the restoting object fails then function return dict with ``"__error__"`` key.
+
+    :param dkt: dictionary with data to restore.
+    """
     if "__error__" in dkt:
         dkt.pop("__error__")  # different environments without same plugins installed
     if "__class__" in dkt:

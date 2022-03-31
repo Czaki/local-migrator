@@ -1,0 +1,5 @@
+sphinx-autodoc-typehints==1.17.0
+sphinx!=3.0.0, !=3.5.0
+napari-sphinx-theme
+numpy
+pydantic
