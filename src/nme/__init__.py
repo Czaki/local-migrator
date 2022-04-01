@@ -1,5 +1,5 @@
 from ._class_register import REGISTER, MigrationInfo, MigrationRegistration, register_class, rename_key, update_argument
-from ._json_hooks import NMEEncoder, nme_object_encoder, nme_object_hook
+from ._serialize_hooks import NMEEncoder, nme_object_encoder, nme_object_hook
 
 
 def nme_cbor_encoder(encoder, value):

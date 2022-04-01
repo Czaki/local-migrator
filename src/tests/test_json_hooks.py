@@ -13,7 +13,7 @@ from pydantic import BaseModel
 
 from nme import NMEEncoder, nme_object_hook, register_class, rename_key
 from nme._class_register import class_to_str
-from nme._json_hooks import add_class_info
+from nme._serialize_hooks import add_class_info
 
 
 @dataclass

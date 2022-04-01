@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def clean_register():
-    from nme._json_hooks import REGISTER
+    from nme._serialize_hooks import REGISTER
 
     def clean():
         REGISTER._data_dkt = {}
