@@ -154,7 +154,7 @@ def test_add_class_info_pydantic(clean_register):
         field: int = 1
 
     dkt = {}
-    add_class_info(SampleClass(), dkt)
+    dkt = add_class_info(SampleClass(), dkt)
     assert "__class__" in dkt
     assert class_to_str(SampleClass) == dkt["__class__"]
     assert len(dkt["__class_version_dkt__"]) == 1
@@ -167,7 +167,7 @@ def test_add_class_info_enum(clean_register):
         field = 1
 
     dkt = {}
-    add_class_info(SampleEnum.field, dkt)
+    dkt = add_class_info(SampleEnum.field, dkt)
     assert "__class__" in dkt
     assert class_to_str(SampleEnum) == dkt["__class__"]
     assert len(dkt["__class_version_dkt__"]) == 1

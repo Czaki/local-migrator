@@ -29,22 +29,24 @@ except ImportError:  # pragma: no cover
 
 
 def add_class_info(obj: typing.Any, dkt: dict) -> dict:
-    dkt["__class__"] = class_to_str(obj.__class__)
-    dkt["__class_version_dkt__"] = {
-        class_to_str(sup_obj): str(REGISTER.get_version(sup_obj))
-        for sup_obj in obj.__class__.__mro__
-        if class_to_str(sup_obj)
-        not in {
-            "object",
-            "pydantic.main.BaseModel",
-            "pydantic.utils.Representation",
-            "enum.Enum",
-            "builtins.object",
-            "typing.Generic",
-        }
-        and not class_to_str(sup_obj).startswith("collections.abc")
+    return {
+        "__class__": class_to_str(obj.__class__),
+        "__class_version_dkt__": {
+            class_to_str(sup_obj): str(REGISTER.get_version(sup_obj))
+            for sup_obj in obj.__class__.__mro__
+            if class_to_str(sup_obj)
+            not in {
+                "object",
+                "pydantic.main.BaseModel",
+                "pydantic.utils.Representation",
+                "enum.Enum",
+                "builtins.object",
+                "typing.Generic",
+            }
+            and not class_to_str(sup_obj).startswith("collections.abc")
+        },
+        "__values__": dkt,
     }
-    return dkt
 
 
 def nme_object_encoder(obj: typing.Any):
@@ -127,15 +129,15 @@ def nme_object_hook(dkt: dict) -> typing.Any:
     if "__error__" in dkt:
         dkt.pop("__error__")  # different environments without same plugins installed
     if "__class__" in dkt:
-        cls_str = dkt.pop("__class__")
-        version_dkt = dkt.pop("__class_version_dkt__") if "__class_version_dkt__" in dkt else {cls_str: "0.0.0"}
+        if "__values__" not in dkt:
+            cls_str = dkt.pop("__class__")
+            version_dkt = dkt.pop("__class_version_dkt__") if "__class_version_dkt__" in dkt else {cls_str: "0.0.0"}
+            dkt = {"__values__": dkt, "__class__": cls_str, "__class_version_dkt__": version_dkt}
         try:
-            dkt_migrated = REGISTER.migrate_data(cls_str, version_dkt, dkt)
-            cls = REGISTER.get_class(cls_str)
+            dkt_migrated = REGISTER.migrate_data(dkt["__class__"], dkt["__class_version_dkt__"], dkt["__values__"])
+            cls = REGISTER.get_class(dkt["__class__"])
             return cls(**dkt_migrated)
         except Exception as e:  # pylint: disable=W0703
-            dkt["__class__"] = cls_str
-            dkt["__class_version_dkt__"] = version_dkt
             dkt["__error__"] = str(e)
 
     return dkt
