@@ -17,7 +17,7 @@ def nme_cbor_encoder(encoder, value):
     """
     res = nme_object_encoder(value)
     if res is None:
-        return encoder.encode(value)
+        raise TypeError(f"Cannot encode {value} of class {type(value)}")
     return encoder.encode(res)
 
 

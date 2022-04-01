@@ -111,7 +111,7 @@ class NMEEncoder(json.JSONEncoder):
         Implementation that calls :py:func:`nme_object_encoder` function.
         """
         val = nme_object_encoder(o)
-        if val is None:
+        if val is None:  # pragma: no cover
             return super().default(o)
         return val
 

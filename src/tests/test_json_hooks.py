@@ -1,7 +1,6 @@
 # pylint: disable=R0201
 
 import json
-from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
@@ -9,14 +8,14 @@ import numpy as np
 import pytest
 from napari.utils import Colormap
 from napari.utils.notifications import NotificationSeverity
-from pydantic import BaseModel
+from pydantic import BaseModel, dataclasses
 
 from nme import NMEEncoder, nme_object_hook, register_class, rename_key
 from nme._class_register import class_to_str
 from nme._serialize_hooks import add_class_info
 
 
-@dataclass
+@dataclasses.dataclass
 class SampleDataclass:
     filed1: int
     field2: str

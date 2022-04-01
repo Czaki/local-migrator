@@ -24,6 +24,8 @@ def get_super_class(cls: Type) -> Optional[Type]:
     if len(cls.__mro__) < 2:
         return None
     if cls.__module__.startswith("pydantic.dataclass"):
+        # Not covered by tests, because I cannot reproduce problem that causes this.
+        # It may be connected with pydantic version
         return get_super_class(cls.__mro__[1])
     return cls.__mro__[1]
 

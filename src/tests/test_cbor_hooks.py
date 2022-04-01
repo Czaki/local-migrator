@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 import cbor2
+import pytest
 from pydantic import BaseModel
 
 from nme import nme_cbor_decoder, nme_cbor_encoder, register_class, rename_key
@@ -44,11 +45,21 @@ class SampleAsDict:
 def test_simple(tmp_path):
     data = {"aa": 1, "bb": 2}
     with open(tmp_path / "test.cbor", "wb") as f_p:
-        cbor2.dump(data, f_p)
+        cbor2.dump(data, f_p, default=nme_cbor_encoder)
 
     with open(tmp_path / "test.cbor", "rb") as f_p:
-        data2 = cbor2.load(f_p)
+        data2 = cbor2.load(f_p, object_hook=nme_cbor_decoder)
     assert data2 == data
+
+
+def test_hook_failure(tmp_path):
+    class DummyClass:
+        def __init__(self):
+            pass
+
+    with pytest.raises(TypeError):
+        with open(tmp_path / "test.cbor", "wb") as f_p:
+            cbor2.dump(DummyClass(), f_p, default=nme_cbor_encoder)
 
 
 def test_serialize_enum(tmp_path, clean_register):

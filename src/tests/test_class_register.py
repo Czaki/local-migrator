@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Any, Dict
 
 import pytest
@@ -112,3 +113,21 @@ def test_migrate_parent_class(clean_register):
 
     migrated = REGISTER.migrate_data(class_to_str(MigrateClass), {}, {"field2": 1, "field": 5})
     assert "field1" in migrated
+
+
+def test_wrong_version(clean_register):
+    class SampleEnum(Enum):
+        value1 = 1
+
+    with pytest.raises(ValueError):
+        register_class("0.0.0", migrations=[("0.0.1", lambda x: x)])(SampleEnum)
+
+
+def test_double_register(clean_register):
+    class SampleEnum(Enum):
+        value1 = 1
+
+    register_class(SampleEnum)
+
+    with pytest.raises(RuntimeError):
+        register_class(SampleEnum)
