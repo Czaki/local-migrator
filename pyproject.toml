@@ -1,6 +1,6 @@
 [project]
 name = "nme"
-description = "Lovely Spam! Wonderful Spam!"
+description = "Package for simplify data structures migrations"
 readme = "README.rst"
 requires-python = ">=3.7"
 license = {file = "LICENSE.txt"}
