@@ -3,18 +3,17 @@ name = "nme"
 description = "Package for simplify data structures migrations"
 readme = "README.rst"
 requires-python = ">=3.7"
-license = {file = "LICENSE.txt"}
+license = {text = "MIT"}
 keywords = ["napari", "migration", "persistance"]
 authors = [
   {email = "g.bokota@uw.edu.pl"},
   {name = "Grzegorz Bokota"}
 ]
-maintainers = [
-  {name = "Grzegorz Bokota", email = "g.bokota@uw.edu.pl"}
-]
+maintainers = []
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python",
+  "Operating System :: OS Independent",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
@@ -44,9 +43,9 @@ cbor = [
 ]
 
 [project.urls]
-homepage = "https://github.com/Czaki/nme"
-documentation = "https://github.com/Czaki/nme"
-repository = "https://github.com/Czaki/nme"
+Homepage = "https://github.com/Czaki/nme"
+Documentation = "https://nme.readthedocs.io/en/latest/"
+Repository = "https://github.com/Czaki/nme"
 
 [build-system]
 # Minimum requirements for the build system to execute.
