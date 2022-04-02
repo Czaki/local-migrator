@@ -33,7 +33,6 @@ dynamic = [
 [project.optional-dependencies]
 test = [
   "pytest > 7.0.0",
-  "pytest-cov[all]",
   "pydantic",
   "numpy",
   "napari"
@@ -41,6 +40,9 @@ test = [
 cbor = [
     "cbor2"
 ]
+
+[project.entry-points.pytest11]
+nme = "nme._testsupport"
 
 [project.urls]
 Homepage = "https://github.com/Czaki/nme"
@@ -55,7 +57,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--cov=nme"
+addopts = ""
 testpaths = [
     "src/tests",
 ]
