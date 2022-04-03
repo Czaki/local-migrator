@@ -22,6 +22,10 @@ Napari Migration Engine
   :target: https://badge.fury.io/py/nme
   :alt: PyPI version
 
+.. image:: https://anaconda.org/conda-forge/nme/badges/version.svg
+  :target: https://anaconda.org/conda-forge/nme
+  :alt: Anaconda version
+
 
 This is support package for simplify data serialization and
 persistance data between sessions and versions.
