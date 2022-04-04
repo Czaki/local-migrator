@@ -33,7 +33,7 @@ repos:
     - id: debug-statements
     - id: mixed-line-ending
 -   repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.20.0
+    rev: v1.20.1
     hooks:
     - id: setup-cfg-fmt
       args: ["--max-py-version=3.9"]
