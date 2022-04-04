@@ -63,4 +63,5 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://docs.scipy.org/doc/numpy/", None),
     "packaging": ("https://packaging.pypa.io/en/latest/", None),
+    "cbor2": ("https://cbor2.readthedocs.io/en/latest", None),
 }

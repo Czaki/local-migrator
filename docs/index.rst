@@ -6,18 +6,31 @@
 Welcome to nme's documentation!
 ===============================
 
+``nme`` is package for support of data persistance between sessions
+and versions.
+Currently it support for :py:mod:`json` and :py:mod:`cbor2` backends.
+
+``nme`` support serialize and deserialize following class and its subclasses:
+(referring to :py:func:`nme.nme_object_encoder`):
+
+* :py:class:`enum.Enum`
+* :py:func:`dataclasses.dataclass`
+* :py:class:`numpy.ndarray`
+* :py:class:`pydantic.BaseModel`
+* :py:class:`numpy.integer` (change to pure int)
+* :py:class:`numpy.floating` (change to pure float)
+* :py:class:`pathlib.Path` (Serialized to string)
+* Any class with an :py:meth:`as_dict` method. This method should
+  return a dictionary of valid constructor arguments.
+
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: nme
-   :members:
-   :show-inheritance:
-
-   .. autodata:: REGISTER
-   .. autodata:: MigrationInfo
-   .. autofunction:: nme_object_encoder
-
+   examples
+   api
 
 Indices and tables
 ==================

@@ -27,12 +27,15 @@ Napari Migration Engine
   :alt: Anaconda version
 
 
-This is support package for simplify data serialization and
-persistance data between sessions and versions.
+This support package simplifies data persistence between user sessions
+and software version updates.
+
+The main idea of this package is simplify data migration between versions,
+and allow to define migration information next to data structure definition.
 
 
-Basic usage
-###########
+Basic usage (data serialization)
+################################
 
 If You only need to serialize data, then you could use only JSON hooks
 
@@ -62,9 +65,6 @@ If You only need to serialize data, then you could use only JSON hooks
 
 Migrations
 ##########
-The main idea of this package is simplify data migration between versions,
-and allow to define migration information next to data structure definition.
-
 
 To register this information there is ``register_class`` decorator.
 It has 4 parameters:
@@ -91,11 +91,11 @@ Lets imagine that we have such code
     with open("sample.json", "w") as f_p:
         json.dump(data, f_p, cls=NMEEncoder)
 
-But there is decision to mov both ``ca`` field to sub structure:
+But there is decision to move both ``ca`` field to sub structure:
 
 .. code-block:: python
 
-    class CaModel(BaseModel)
+    class CaModel(BaseModel):
         field_1: str
         field_2: float
 
@@ -110,7 +110,7 @@ Then with ``nme`` code may look:
 
     from nme import nme_object_hook, register_class
 
-    class CaModel(BaseModel)
+    class CaModel(BaseModel):
         field_1: str
         field_2: float
 
@@ -127,36 +127,32 @@ Then with ``nme`` code may look:
     with open("sample.json") as f_p:
         data = json.load(f_p, object_hook=nme_object_hook)
 
-
-CBOR support
-############
-
-Also ``cbor2`` encoder (``nme_object_encoder``) and object hook
-(``nme_cbor_decoder``) are available.
+Assume that there is decision to rename ``field1`` to ``id``.
+Then code may look:
 
 .. code-block:: python
 
-    import cbor2
-    from pydantic import BaseModel
-    from nme import nme_cbor_encoder, nme_cbor_decoder
+    from nme import nme_object_hook, register_class, rename_key
 
+    class CaModel(BaseModel):
+        field_1: str
+        field_2: float
 
+    def ca_migration_function(dkt):
+        dkt["field_ca"] = CaModel(field1=dkt.pop("field_ca_1"),
+                                  field2=dkt.pop("field_ca_2"))
+        return dkt
+
+    @register_class("0.0.2", [("0.0.1", ca_migration_function), ("0.0.2", rename_key("field1", "id"))])
     class SampleModel(BaseModel):
-        field1: int
-        field2: str
+        id: int
+        field_ca: CaModel
+
+    with open("sample.json") as f_p:
+        data = json.load(f_p, object_hook=nme_object_hook)
 
 
-    data = SampleModel(field1=4, field2="abc")
-
-    with open("sample.cbor", "wb") as f_p:
-        cbor2.dump(data, f_p, default=nme_cbor_encoder)
-
-    with open("sample.cbor", "rb") as f_p:
-        data2 = cbor2.load(f_p, object_hook=nme_cbor_decoder)
-
-    assert data == data2
-
-
+More examples could be found in `examples`_ section of documentation
 
 Additional functions
 ####################
@@ -176,3 +172,4 @@ project for simplify reuse it in another projects.
 
 
 .. _PartSeg: https://github.com/4DNucleome/PartSeg
+.. _examples: https://nme.readthedocs.io/en/latest/examples.html
