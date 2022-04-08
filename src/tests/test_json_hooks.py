@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from napari.utils import Colormap
 from napari.utils.notifications import NotificationSeverity
-from pydantic import BaseModel, dataclasses
+from pydantic import BaseModel, Extra, dataclasses
 
 from nme import NMEEncoder, nme_object_hook, register_class, rename_key
 from nme._class_register import class_to_str
@@ -229,6 +229,32 @@ class TestNMEObjectHook:
 
         ob = json.loads(data_str, object_hook=nme_object_hook)
         assert isinstance(ob, MainClass)
+
+    def test_error_in_object_restore(self, clean_register):
+        @register_class
+        class SubClass(BaseModel, extra=Extra.forbid):
+            field: int = 1
+
+        @register_class
+        class MainClass(BaseModel):
+            field: int = 1
+            sub11: SubClass = SubClass()
+
+        data_str = """
+        {"__class__": "test_json_hooks.TestNMEObjectHook.test_error_in_object_restore.<locals>.MainClass",
+        "__class_version_dkt__":
+        {"test_json_hooks.TestNMEObjectHook.test_error_in_object_restore.<locals>.MainClass": "0.0.0"},
+        "__values__": {"field": 1,
+        "sub11": {"__class__": "test_json_hooks.TestNMEObjectHook.test_error_in_object_restore.<locals>.SubClass",
+        "__class_version_dkt__":
+        {"test_json_hooks.TestNMEObjectHook.test_error_in_object_restore.<locals>.SubClass": "0.0.0"},
+        "__values__": {"field": 1, "eee": 1}}}}
+        """
+
+        ob = json.loads(data_str, object_hook=nme_object_hook)
+        assert isinstance(ob, dict)
+        assert "__error__" in ob
+        assert ob["__error__"] == "Error in fields: sub11"
 
 
 class DummyClassForTest:

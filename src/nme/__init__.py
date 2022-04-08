@@ -7,7 +7,7 @@ from ._class_register import (
     rename_key,
     update_argument,
 )
-from ._serialize_hooks import NMEEncoder, nme_object_encoder, nme_object_hook
+from ._serialize_hooks import NMEEncoder, check_for_errors_in_dkt_values, nme_object_encoder, nme_object_hook
 from .version import version as __version__
 
 
@@ -47,6 +47,7 @@ def nme_cbor_decoder(decoder, value):
 
 __all__ = (
     "class_to_str",
+    "check_for_errors_in_dkt_values",
     "register_class",
     "nme_object_hook",
     "rename_key",

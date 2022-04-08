@@ -116,6 +116,16 @@ class NMEEncoder(json.JSONEncoder):
         return val
 
 
+def check_for_errors_in_dkt_values(dkt: dict) -> typing.List[str]:
+    """
+    Function checking if any of values in dict contains ``"__error__"`` key.
+
+    :param dkt: dictionary to check.
+    :return: list of keys that value is dict containing ``"__error__"`` key.
+    """
+    return [key for key, value in dkt.items() if isinstance(value, dict) and "__error__" in value]
+
+
 def nme_object_hook(dkt: dict) -> typing.Any:
     """
     Function restoring supported types from :py:func:`nme_object_encoder` function output.
@@ -133,6 +143,10 @@ def nme_object_hook(dkt: dict) -> typing.Any:
             cls_str = dkt.pop("__class__")
             version_dkt = dkt.pop("__class_version_dkt__") if "__class_version_dkt__" in dkt else {cls_str: "0.0.0"}
             dkt = {"__values__": dkt, "__class__": cls_str, "__class_version_dkt__": version_dkt}
+        problematic_fields = check_for_errors_in_dkt_values(dkt["__values__"])
+        if problematic_fields:
+            dkt["__error__"] = f"Error in fields: {', '.join(problematic_fields)}"
+            return dkt
         try:
             dkt_migrated = REGISTER.migrate_data(dkt["__class__"], dkt["__class_version_dkt__"], dkt["__values__"])
             cls = REGISTER.get_class(dkt["__class__"])
