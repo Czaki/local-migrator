@@ -3,6 +3,7 @@ This module contains utility for registration migration information for class.
 """
 import importlib
 import inspect
+import warnings
 from dataclasses import dataclass
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
@@ -33,6 +34,17 @@ def get_super_class(cls: Type) -> Optional[Type]:
 def str_to_version(version: Union[str, Version]) -> Version:
     """If version passed as sting then convert it to Version object, otherwise return untouched."""
     return parse_version(version) if isinstance(version, str) else version
+
+
+def _class_str_replace(func):
+    @wraps(func)
+    def _wrap(*args, **kwargs):
+        if "class_str" in kwargs:
+            warnings.warn("class_str argument is deprecated, use cls instead", FutureWarning, stacklevel=2)
+            kwargs["cls"] = kwargs.pop("class_str")
+        return func(*args, **kwargs)
+
+    return _wrap
 
 
 MigrationCallable = Callable[[Dict[str, Any]], Dict[str, Any]]
@@ -151,8 +163,9 @@ class MigrationRegistration:
         self._register_missed(class_str=class_str)
         return self._data_dkt[class_str].type_
 
+    @_class_str_replace
     def migrate_data(
-        self, class_str: str, class_str_to_version_dkt: Dict[str, Union[str, Version]], data: Dict[str, Any]
+        self, cls: Union[str, Type], class_str_to_version_dkt: Dict[str, Union[str, Version]], data: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
         Apply migrations base on register state. Current implementation does not support multiple inheritance.
@@ -162,12 +175,15 @@ class MigrationRegistration:
             If class is absent from this dict then assumed version is "0.0.0"
         :param data: dict of kwargs to constructor of class
         """
-        if self.use_parent_migrations(class_str):
-            super_klass = get_super_class(self.get_class(class_str))
+        if not isinstance(cls, str):
+            cls = class_to_str(cls)
+
+        if self.use_parent_migrations(cls):
+            super_klass = get_super_class(self.get_class(cls))
             if super_klass is not None:
                 data = self.migrate_data(class_to_str(super_klass), class_str_to_version_dkt, data)
-        version = str_to_version(class_str_to_version_dkt.get(class_str, "0.0.0"))
-        for version_, migration in self._data_dkt[class_str].migrations:
+        version = str_to_version(class_str_to_version_dkt.get(cls, "0.0.0"))
+        for version_, migration in self._data_dkt[cls].migrations:
             if version < version_:
                 data = migration(data)
         return data

@@ -115,6 +115,33 @@ def test_migrate_parent_class(clean_register):
     assert "field1" in migrated
 
 
+def test_migrate_by_class(clean_register):
+    @register_class(version="0.0.1", migrations=[("0.0.1", rename_key("field", "field1"))])
+    class MigrateClass:
+        def __init__(self, field1):
+            self.field1 = field1
+
+    migrated = REGISTER.migrate_data(class_to_str(MigrateClass), {}, {"field": 5})
+    migrated2 = REGISTER.migrate_data(MigrateClass, {}, {"field": 5})
+    assert migrated == {"field1": 5}
+    assert migrated == migrated2
+
+
+def test_migrate_keywords_args(clean_register):
+    @register_class(version="0.0.1", migrations=[("0.0.1", rename_key("field", "field1"))])
+    class MigrateClass:
+        def __init__(self, field1):
+            self.field1 = field1
+
+    migrated = REGISTER.migrate_data(cls=class_to_str(MigrateClass), class_str_to_version_dkt={}, data={"field": 5})
+    with pytest.warns(FutureWarning):
+        migrated2 = REGISTER.migrate_data(
+            class_str=class_to_str(MigrateClass), class_str_to_version_dkt={}, data={"field": 5}
+        )
+    assert migrated == {"field1": 5}
+    assert migrated == migrated2
+
+
 def test_wrong_version(clean_register):
     class SampleEnum(Enum):
         value1 = 1
