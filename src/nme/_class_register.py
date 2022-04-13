@@ -183,13 +183,20 @@ class MigrationRegistration:
                 module = importlib.import_module(module_name)
                 break
             except ModuleNotFoundError:
-                module_name, class_name_ = module_name.rsplit(".", maxsplit=1)
+                module_name_split = module_name.rsplit(".", maxsplit=1)
+                if len(module_name_split) == 1:
+                    raise ValueError(f"Class {class_str} not found")
+
+                module_name, class_name_ = module_name_split
                 class_path.append(class_name_)
         if class_str in self._data_dkt:
             return
         class_ = module
-        for name in class_path[::-1]:
-            class_ = getattr(class_, name)
+        try:
+            for name in class_path[::-1]:
+                class_ = getattr(class_, name)
+        except AttributeError:
+            raise ValueError(f"Class {class_str} not found")
         self.register(class_)
 
 

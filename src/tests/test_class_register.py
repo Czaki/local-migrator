@@ -131,3 +131,10 @@ def test_double_register(clean_register):
 
     with pytest.raises(RuntimeError):
         register_class(SampleEnum)
+
+
+def test_missed_class(clean_register):
+    with pytest.raises(ValueError, match=r"Class [\w\.]+ not found"):
+        REGISTER.get_class("nme.not_package.not_module.NotClass")
+    with pytest.raises(ValueError, match=r"Class [\w\.]+ not found"):
+        REGISTER.get_class("nme_not.not_package.not_module.NotClass")
