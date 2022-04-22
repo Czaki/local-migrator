@@ -164,6 +164,13 @@ Additional functions
   compatibility by converting ``dict`` argument to some class base on function type annotation
 
 
+Contributing
+############
+
+Contributions are encouraged! Please create pull request or open issue.
+For PR please remember to add tests and documentation.
+
+
 Additional notes
 ################
 
