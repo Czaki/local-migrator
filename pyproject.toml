@@ -94,4 +94,4 @@ exclude = '''
 line_length=120
 known_first_party=['nme']
 profile="black"
-src_paths=["packsrcage"]
+src_paths=["src"]
