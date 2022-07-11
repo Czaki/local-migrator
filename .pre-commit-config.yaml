@@ -33,7 +33,7 @@ repos:
     - id: debug-statements
     - id: mixed-line-ending
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.34.0
+    rev: v2.37.1
     hooks:
     - id: pyupgrade
       args: ["--py37-plus"]
