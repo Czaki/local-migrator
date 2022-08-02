@@ -13,7 +13,7 @@ repos:
     -   id: autoflake
         args: ["--remove-all-unused-imports", "-i"]
 -   repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 5.0.2
     hooks:
     - id: flake8
       pass_filenames: true
@@ -33,7 +33,7 @@ repos:
     - id: debug-statements
     - id: mixed-line-ending
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.1
+    rev: v2.37.3
     hooks:
     - id: pyupgrade
       args: ["--py37-plus"]
@@ -47,6 +47,6 @@ repos:
     -   id: isort
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v0.961'  # Use the sha / tag you want to point at
+    rev: 'v0.971'  # Use the sha / tag you want to point at
     hooks:
     -   id: mypy
