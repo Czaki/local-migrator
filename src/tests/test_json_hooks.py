@@ -90,6 +90,7 @@ def test_dump_numpy_types(dtype):
 
 
 class TestNMEEncoder:
+    @pytest.skipif(NotificationSeverity is None, reason="napari not installed")
     def test_enum_serialize(self, tmp_path):
         data = {"value1": RadiusType.R2D, "value2": RadiusType.NO, "value3": NotificationSeverity.ERROR}
         with (tmp_path / "test.json").open("w") as f_p:
@@ -110,6 +111,7 @@ class TestNMEEncoder:
         assert isinstance(data2["value"], SampleDataclass)
         assert data2["value"] == SampleDataclass(1, "text")
 
+    @pytest.skipif(Colormap is None, reason="napari not installed")
     def test_pydantic_serialize(self, tmp_path):
         data = {
             "color1": Colormap(colors=[[0, 0, 0], [0, 0, 0]], controls=[0, 1]),
