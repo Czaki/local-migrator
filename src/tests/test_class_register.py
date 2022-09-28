@@ -165,3 +165,16 @@ def test_missed_class(clean_register):
         REGISTER.get_class("nme.not_package.not_module.NotClass")
     with pytest.raises(ValueError, match=r"Class [\w\.]+ not found"):
         REGISTER.get_class("nme_not.not_package.not_module.NotClass")
+
+
+def test_allow_errors(clean_register):
+    @register_class
+    class _SampleClass1:
+        pass
+
+    @register_class(allow_errors_in_values=True)
+    class _SampleClass2:
+        pass
+
+    assert not REGISTER.allow_errors_in_values(_SampleClass1)
+    assert REGISTER.allow_errors_in_values(_SampleClass2)
