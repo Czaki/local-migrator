@@ -6,13 +6,18 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from napari.utils import Colormap
-from napari.utils.notifications import NotificationSeverity
 from pydantic import BaseModel, Extra, dataclasses
 
 from nme import NMEEncoder, nme_object_hook, register_class, rename_key
 from nme._class_register import class_to_str
 from nme._serialize_hooks import add_class_info
+
+try:
+    from napari.utils import Colormap
+    from napari.utils.notifications import NotificationSeverity
+except ImportError:
+    Colormap = None
+    NotificationSeverity = None
 
 
 @dataclasses.dataclass
@@ -42,6 +47,7 @@ class RadiusType(Enum):
     R3D = 2
 
 
+@pytest.mark.skipif(Colormap is None, reason="napari not installed")
 def test_colormap_dump(tmp_path):
     cmap_list = [Colormap([(0, 0, 0), (1, 1, 1)]), Colormap([(0, 0, 0), (1, 1, 1)], controls=[0, 1])]
     with open(tmp_path / "test.json", "w") as f_p:
