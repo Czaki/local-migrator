@@ -74,6 +74,7 @@ class TypeInfo:
     version: Version
     migrations: List[MigrationInfo]
     use_parent_migrations: bool
+    allow_errors_in_values: bool
 
 
 class MigrationRegistration:
@@ -91,6 +92,7 @@ class MigrationRegistration:
         migrations: List[MigrationStartInfo] = None,
         old_paths: List[str] = None,
         use_parent_migrations: bool = True,
+        allow_errors_in_values: bool = False,
     ) -> RegisterReturnType:
         """
         Register class instance for storage information needed for deserialization of object from older version.
@@ -101,6 +103,8 @@ class MigrationRegistration:
         :param  typing.List[MigrationInfo] migrations: list of migrations for deserialize old version
         :param old_paths: old name of class with modules
         :param use_parent_migrations: if migrations from parent class should be applied when deserialized object
+        :param allow_errors_in_values: if errors in constructor kwargs should be ignored. Added to not block creating
+            of custom Mapping class that could contain broken items.
         :return: class itself if cls parameter is provided. Otherwise,
             one argument function which will consume Type to be registered.
         """
@@ -123,6 +127,7 @@ class MigrationRegistration:
                 version=version,
                 migrations=migrations,
                 use_parent_migrations=use_parent_migrations,
+                allow_errors_in_values=allow_errors_in_values,
             )
             if base_path in self._data_dkt:
                 raise RuntimeError(f"Class name {base_path} already taken by {self._data_dkt[base_path].base_path}")
@@ -133,9 +138,7 @@ class MigrationRegistration:
                 self._data_dkt[name] = type_info
             return cls_
 
-        if cls is None:
-            return _register
-        return _register(cls)
+        return _register if cls is None else _register(cls)
 
     def use_parent_migrations(self, name: str) -> bool:
         """
@@ -163,6 +166,17 @@ class MigrationRegistration:
         self._register_missed(class_str=class_str)
         return self._data_dkt[class_str].type_
 
+    def allow_errors_in_values(self, cls: Union[str, Type]) -> bool:
+        """
+        Check if class should allow errors in values.
+
+        :param cls: class or full qualified path to class
+        """
+        if not isinstance(cls, str):
+            cls = class_to_str(cls)
+        self._register_missed(class_str=cls)
+        return self._data_dkt[cls].allow_errors_in_values
+
     @_class_str_replace
     def migrate_data(
         self, cls: Union[str, Type], class_str_to_version_dkt: Dict[str, Union[str, Version]], data: Dict[str, Any]
@@ -170,7 +184,7 @@ class MigrationRegistration:
         """
         Apply migrations base on register state. Current implementation does not support multiple inheritance.
 
-        :param class_str: fully qualified class path
+        :param cls: fully qualified class path
         :param class_str_to_version_dkt: for each parent class information about version during serialization.
             If class is absent from this dict then assumed version is "0.0.0"
         :param data: dict of kwargs to constructor of class
@@ -198,10 +212,10 @@ class MigrationRegistration:
             try:
                 module = importlib.import_module(module_name)
                 break
-            except ModuleNotFoundError:
+            except ModuleNotFoundError as e:
                 module_name_split = module_name.rsplit(".", maxsplit=1)
                 if len(module_name_split) == 1:
-                    raise ValueError(f"Class {class_str} not found")
+                    raise ValueError(f"Class {class_str} not found") from e
 
                 module_name, class_name_ = module_name_split
                 class_path.append(class_name_)
@@ -211,8 +225,8 @@ class MigrationRegistration:
         try:
             for name in class_path[::-1]:
                 class_ = getattr(class_, name)
-        except AttributeError:
-            raise ValueError(f"Class {class_str} not found")
+        except AttributeError as e:
+            raise ValueError(f"Class {class_str} not found") from e
         self.register(class_)
 
 
@@ -299,6 +313,7 @@ def register_class(
     migrations: List[MigrationStartInfo] = None,
     old_paths: List[str] = None,
     use_parent_migrations: bool = True,
+    allow_errors_in_values: bool = False,
 ) -> RegisterReturnType:
     """
     This is wrapper for call :py:meth:`MigrationRegistration.register` of default register instance.
@@ -309,6 +324,8 @@ def register_class(
     :param  typing.List[MigrationInfo] migrations: list of migrations for deserialize old version
     :param old_paths: old name of class with modules
     :param use_parent_migrations: if migrations from parent class should be applied when deserialized object
+    :param allow_errors_in_values: if errors in constructor kwargs should be ignored. Added to not block creating
+        of custom Mapping class that could contain broken items.
     :return: class itself if cls parameter is provided. Otherwise,
         one argument function which will consume Type to be registered.
 
@@ -331,4 +348,4 @@ def register_class(
         register_class(DataClass2, version="0.0.1", migrations=[("0.0.1", rename_key("value", "value1"))])
 
     """
-    return REGISTER.register(cls, version, migrations, old_paths, use_parent_migrations)
+    return REGISTER.register(cls, version, migrations, old_paths, use_parent_migrations, allow_errors_in_values)

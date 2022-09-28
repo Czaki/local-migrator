@@ -143,8 +143,13 @@ def nme_object_hook(dkt: dict) -> typing.Any:
             cls_str = dkt.pop("__class__")
             version_dkt = dkt.pop("__class_version_dkt__") if "__class_version_dkt__" in dkt else {cls_str: "0.0.0"}
             dkt = {"__values__": dkt, "__class__": cls_str, "__class_version_dkt__": version_dkt}
+        try:
+            cls = REGISTER.get_class(dkt["__class__"])
+        except (KeyError, ValueError):
+            dkt["__error__"] = f"Class {dkt['__class__']} not found in register."
+            return dkt
         problematic_fields = check_for_errors_in_dkt_values(dkt["__values__"])
-        if problematic_fields:
+        if problematic_fields and not REGISTER.allow_errors_in_values(cls):
             dkt["__error__"] = f"Error in fields: {', '.join(problematic_fields)}"
             return dkt
         try:
