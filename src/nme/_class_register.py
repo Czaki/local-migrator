@@ -87,10 +87,10 @@ class MigrationRegistration:
 
     def register(
         self,
-        cls: Type = None,
+        cls: Optional[Type] = None,
         version: Union[str, Version] = "0.0.0",
-        migrations: List[MigrationStartInfo] = None,
-        old_paths: List[str] = None,
+        migrations: Optional[List[MigrationStartInfo]] = None,
+        old_paths: Optional[List[str]] = None,
         use_parent_migrations: bool = True,
         allow_errors_in_values: bool = False,
     ) -> RegisterReturnType:
@@ -310,8 +310,8 @@ def update_argument(argument_name):
 def register_class(
     cls: Optional[Type[T]] = None,
     version: Union[str, Version] = "0.0.0",
-    migrations: List[MigrationStartInfo] = None,
-    old_paths: List[str] = None,
+    migrations: Optional[List[MigrationStartInfo]] = None,
+    old_paths: Optional[List[str]] = None,
     use_parent_migrations: bool = True,
     allow_errors_in_values: bool = False,
 ) -> RegisterReturnType:
