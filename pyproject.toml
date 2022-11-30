@@ -90,8 +90,21 @@ exclude = '''
 )
 '''
 
-[tool.isort]
-line_length=120
-known_first_party=['nme']
-profile="black"
-src_paths=["src"]
+[tool.ruff]
+line-length = 120
+select = ["E", "F", "I", "U", "C", "A" ,"YTT"]
+ignore = ["A003"]
+exclude = ["examples/call_simple_threshold.py"]
+target-version = "py37"
+fix = true
+
+[tool.ruff.isort]
+known-first-party=['nme']
+
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 15
+
+[tool.ruff.per-file-ignores]
+"docs/conf.py" = ["A001"]

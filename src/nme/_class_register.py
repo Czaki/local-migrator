@@ -111,7 +111,7 @@ class MigrationRegistration:
         if migrations is None:
             migrations = []
         else:
-            migrations = list(sorted((str_to_version(x), y) for x, y in migrations))
+            migrations = sorted((str_to_version(x), y) for x, y in migrations)
         if old_paths is None:
             old_paths = []
         version = str_to_version(version)
