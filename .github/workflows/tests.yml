@@ -62,12 +62,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          path: "local_migrator"
+          path: "local_migrator_repo"
           fetch-depth: 0
       - uses: actions/checkout@v3
         with:
           repo: "czaki/nme"
-          path: "nme"
+          path: "nme_repo"
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -75,10 +75,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install ./local_migrator[test,cbor]
-          python -m pip install ./nme --no-deps
+          python -m pip install ./local_migrator_repo[test,cbor]
+          python -m pip install ./nme_repo --no-deps
 
-      - name: Test with tox
+      - name: tests
         run: python -m pytest nme/src/tests
 
   deploy:
