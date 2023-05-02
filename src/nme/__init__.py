@@ -29,7 +29,7 @@ def nme_cbor_encoder(encoder, value):
     return encoder.encode(res)
 
 
-def nme_cbor_decoder(decoder, value):
+def nme_cbor_decoder(decoder, value):  # noqa: ARG001
     """
     Cbor decoder hook. Use :py:func:`nme_object_hook` to decode objects.
 

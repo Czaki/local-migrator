@@ -10,7 +10,7 @@ try:
     from pydantic import BaseModel
 except ImportError:  # pragma: no cover
     # allow to use in environment without pydantic.
-    class BaseModel:  # type: ignore
+    class BaseModel:  # type: ignore  [no-redef]
         pass
 
 
@@ -18,13 +18,13 @@ try:
     from numpy import floating, integer, ndarray
 except ImportError:  # pragma: no cover
     # allow to use in environment without numpy.
-    class ndarray:  # type: ignore
+    class ndarray:  # type: ignore  [no-redef]
         pass
 
-    class integer:  # type: ignore
+    class integer:  # type: ignore  [no-redef]
         pass
 
-    class floating:  # type: ignore
+    class floating:  # type: ignore  [no-redef]
         pass
 
 
@@ -49,7 +49,7 @@ def add_class_info(obj: typing.Any, dkt: dict) -> dict:
     }
 
 
-def nme_object_encoder(obj: typing.Any):
+def nme_object_encoder(obj: typing.Any):  # noqa: PLR0911
     """
     Function changing supported types to basic python types supported by most
     serializers and which could be restored by :py:func:`nme_object_hook` function.

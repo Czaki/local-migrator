@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.fixture
+@pytest.fixture()
 def clean_register():
     from nme._serialize_hooks import REGISTER
 

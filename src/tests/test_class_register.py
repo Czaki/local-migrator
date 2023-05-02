@@ -146,7 +146,7 @@ def test_wrong_version(clean_register):
     class SampleEnum(Enum):
         value1 = 1
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="class version lower than in migrations"):
         register_class("0.0.0", migrations=[("0.0.1", lambda x: x)])(SampleEnum)
 
 

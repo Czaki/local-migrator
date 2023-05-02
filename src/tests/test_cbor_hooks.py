@@ -57,9 +57,8 @@ def test_hook_failure(tmp_path):
         def __init__(self):
             pass
 
-    with pytest.raises(TypeError):
-        with open(tmp_path / "test.cbor", "wb") as f_p:
-            cbor2.dump(DummyClass(), f_p, default=nme_cbor_encoder)
+    with pytest.raises(TypeError), open(tmp_path / "test.cbor", "wb") as f_p:
+        cbor2.dump(DummyClass(), f_p, default=nme_cbor_encoder)
 
 
 def test_serialize_enum(tmp_path, clean_register):
@@ -68,7 +67,7 @@ def test_serialize_enum(tmp_path, clean_register):
 
     with open(tmp_path / "test.cbor", "rb") as f_p:
         data = cbor2.load(f_p, object_hook=nme_cbor_decoder)
-    assert RadiusType.NO == data
+    assert data == RadiusType.NO
 
 
 def test_dataclass_serialize(tmp_path, clean_register):

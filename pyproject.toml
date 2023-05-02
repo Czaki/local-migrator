@@ -92,7 +92,35 @@ exclude = '''
 
 [tool.ruff]
 line-length = 120
-select = ["E", "F", "I", "U", "C", "A" ,"YTT"]
+select = [
+    "F", # Pyflakes
+    "E", "W", # pycodestyle
+    "C90", # mccabe
+    "I", # isort
+    "UP", # pyupgrade
+    "A", # flake8-builtins
+    "YTT", # flake8-2020
+    "S", # flake8-bandit
+    # "BLE", # flake8-blind-except
+    "B", # lake8-bugbear
+    "A", #flake8-builtins
+    "C4", # flake8-comprehensions
+    "ISC", # flake8-implicit-str-concat
+    "ICN", # flake8-import-conventions
+    "G", # flake8-logging-format
+    "PIE", # flake8-pie
+    "PT", # flake8-pytest-style
+    "Q", # flake8-quotes
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "ARG", # flake8-unused-arguments
+    "PGH", # pygrep-hooks
+    "PLC", "PLE", "PLR", "PLW", # pylint
+    "NPY", # NumPy-specific rules
+    "RUF", # Ruff-specific rules
+]
 ignore = ["A003"]
 exclude = ["examples/call_simple_threshold.py"]
 target-version = "py37"
@@ -108,3 +136,5 @@ max-complexity = 15
 
 [tool.ruff.per-file-ignores]
 "docs/conf.py" = ["A001"]
+"src/tests/**" = ["ARG", "PLC1901", "S101", "PLR2004"]
+"examples/**" = ["S101"]
