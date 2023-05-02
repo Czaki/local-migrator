@@ -1,4 +1,4 @@
-from nme import register_class
+from local_migrator import register_class
 
 
 @register_class

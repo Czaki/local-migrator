@@ -1,5 +1,5 @@
 [project]
-name = "nme"
+name = "local_migrator"
 description = "Package for simplify data structures migrations"
 readme = "README.rst"
 requires-python = ">=3.8"
@@ -42,12 +42,12 @@ cbor = [
 ]
 
 [project.entry-points.pytest11]
-nme = "nme._testsupport"
+local_migrator = "local_migrator._testsupport"
 
 [project.urls]
-Homepage = "https://github.com/Czaki/nme"
-Documentation = "https://nme.readthedocs.io/en/latest/"
-Repository = "https://github.com/Czaki/nme"
+Homepage = "https://github.com/Czaki/local_migrator"
+Documentation = "https://local_migrator.readthedocs.io/en/latest/"
+Repository = "https://github.com/Czaki/local_migrator"
 
 [build-system]
 # Minimum requirements for the build system to execute.
@@ -63,7 +63,7 @@ testpaths = [
 ]
 
 [tool.setuptools_scm]
-write_to = "src/nme/version.py"
+write_to = "src/local_migrator/version.py"
 
 [tool.black]
 line-length = 120
@@ -127,7 +127,7 @@ target-version = "py38"
 fix = true
 
 [tool.ruff.isort]
-known-first-party=['nme']
+known-first-party=['local_migrator']
 
 
 [tool.ruff.mccabe]

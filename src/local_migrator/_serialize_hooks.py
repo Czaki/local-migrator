@@ -49,7 +49,7 @@ def add_class_info(obj: typing.Any, dkt: dict) -> dict:
     }
 
 
-def nme_object_encoder(obj: typing.Any):  # noqa: PLR0911
+def object_encoder(obj: typing.Any):  # noqa: PLR0911
     """
     Function changing supported types to basic python types supported by most
     serializers and which could be restored by :py:func:`nme_object_hook` function.
@@ -100,7 +100,7 @@ def nme_object_encoder(obj: typing.Any):  # noqa: PLR0911
     return None
 
 
-class NMEEncoder(json.JSONEncoder):
+class Encoder(json.JSONEncoder):
     """
     JSONEncoder subclass for serializing Python objects into JSON.
     For list of supported types check :py:func:`nme_object_encoder` function.
@@ -110,7 +110,7 @@ class NMEEncoder(json.JSONEncoder):
         """
         Implementation that calls :py:func:`nme_object_encoder` function.
         """
-        val = nme_object_encoder(o)
+        val = object_encoder(o)
         if val is None:  # pragma: no cover
             return super().default(o)
         return val
@@ -126,13 +126,13 @@ def check_for_errors_in_dkt_values(dkt: dict) -> typing.List[str]:
     return [key for key, value in dkt.items() if isinstance(value, dict) and "__error__" in value]
 
 
-def nme_object_hook(dkt: dict) -> typing.Any:
+def object_hook(dkt: dict) -> typing.Any:
     """
     Function restoring supported types from :py:func:`nme_object_encoder` function output.
 
     If ``dkt`` does not contain ``__class__`` key, it is returned as is.
 
-    If the restoting object fails then function return dict with ``"__error__"`` key.
+    If the restoring object fails then function return dict with ``"__error__"`` key.
 
     :param dkt: dictionary with data to restore.
     """
@@ -160,3 +160,8 @@ def nme_object_hook(dkt: dict) -> typing.Any:
             dkt["__error__"] = str(e)
 
     return dkt
+
+
+nme_object_hook = object_hook
+nme_object_encoder = object_encoder
+NMEEncoder = Encoder
