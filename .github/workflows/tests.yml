@@ -79,7 +79,7 @@ jobs:
           python -m pip install ./nme_repo --no-deps
 
       - name: tests
-        run: python -m pytest nme/src/tests
+        run: python -m pytest nme_repo/src/tests
 
   deploy:
     # this will run when you have tagged a commit, starting with "v*"
