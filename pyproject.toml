@@ -1,10 +1,10 @@
 [project]
-name = "local_migrator"
+name = "local-migrator"
 description = "Package for simplify data structures migrations"
 readme = "README.rst"
 requires-python = ">=3.8"
 license = {text = "MIT"}
-keywords = ["napari", "migration", "persistance"]
+keywords = ["migration", "persistance"]
 authors = [
   {email = "g.bokota@uw.edu.pl"},
   {name = "Grzegorz Bokota"}
@@ -46,7 +46,7 @@ local_migrator = "local_migrator._testsupport"
 
 [project.urls]
 Homepage = "https://github.com/Czaki/local_migrator"
-Documentation = "https://local_migrator.readthedocs.io/en/latest/"
+Documentation = "https://local-migrator.readthedocs.io/en/latest/"
 Repository = "https://github.com/Czaki/local_migrator"
 
 [build-system]

@@ -2,24 +2,24 @@
 Local Migrator
 **************
 
-.. image:: https://codecov.io/gh/Czaki/local_migrator/branch/main/graph/badge.svg?token=KGEGEQYYRH
-  :target: https://codecov.io/gh/Czaki/local_migrator
+.. image:: https://codecov.io/gh/Czaki/local-migrator/branch/main/graph/badge.svg?token=KGEGEQYYRH
+  :target: https://codecov.io/gh/Czaki/local-migrator
   :alt: Codecov
 
-.. image:: https://github.com/Czaki/local_migrator/actions/workflows/tests.yml/badge.svg
-  :target: https://github.com/Czaki/local_migrator/actions/workflows/tests.yml
+.. image:: https://github.com/Czaki/local-migrator/actions/workflows/tests.yml/badge.svg
+  :target: https://github.com/Czaki/local-migrator/actions/workflows/tests.yml
   :alt: Test
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
   :target: https://github.com/psf/black
   :alt: Code Style
 
-.. image:: https://readthedocs.org/projects/local_migrator/badge/?version=latest
-  :target: https://local_migrator.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/local-migrator/badge/?version=latest
+  :target: https://local-migrator.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
-.. image:: https://badge.fury.io/py/local_migrator.svg
-  :target: https://badge.fury.io/py/local_migrator
+.. image:: https://badge.fury.io/py/local-migrator.svg
+  :target: https://badge.fury.io/py/local-migrator
   :alt: PyPI version
 
 .. image:: https://anaconda.org/conda-forge/local_migrator/badges/version.svg
