@@ -174,6 +174,8 @@ For PR please remember to add tests and documentation.
 Additional notes
 ################
 
+This package is originally named ``nme`` but was rename to clarify its purpose.
+
 This package is extracted from `PartSeg`_
 project for simplify reuse it in another projects.
 
