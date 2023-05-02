@@ -3,8 +3,7 @@ from typing import Any, Dict
 
 import pytest
 
-from local_migrator import REGISTER, register_class, rename_key, update_argument
-from local_migrator._class_register import class_to_str
+from local_migrator import REGISTER, class_to_str, register_class, rename_key, update_argument
 
 
 @register_class
