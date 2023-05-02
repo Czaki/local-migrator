@@ -8,9 +8,9 @@ import numpy as np
 import pytest
 from pydantic import BaseModel, Extra, dataclasses
 
-from nme import NMEEncoder, nme_object_hook, register_class, rename_key
-from nme._class_register import class_to_str
-from nme._serialize_hooks import add_class_info
+from local_migrator import Encoder, object_hook, register_class, rename_key
+from local_migrator._class_register import class_to_str
+from local_migrator._serialize_hooks import add_class_info
 
 try:
     from napari.utils import Colormap
@@ -51,10 +51,10 @@ class RadiusType(Enum):
 def test_colormap_dump(tmp_path):
     cmap_list = [Colormap([(0, 0, 0), (1, 1, 1)]), Colormap([(0, 0, 0), (1, 1, 1)], controls=[0, 1])]
     with open(tmp_path / "test.json", "w") as f_p:
-        json.dump(cmap_list, f_p, cls=NMEEncoder)
+        json.dump(cmap_list, f_p, cls=Encoder)
 
     with open(tmp_path / "test.json") as f_p:
-        cmap_list2 = json.load(f_p, object_hook=nme_object_hook)
+        cmap_list2 = json.load(f_p, object_hook=object_hook)
 
     assert np.array_equal(cmap_list[0].colors, cmap_list2[0].colors)
     assert np.array_equal(cmap_list[0].controls, cmap_list2[0].controls)
@@ -66,10 +66,10 @@ def test_colormap_dump(tmp_path):
         Colormap([(0, 0, 0), (0, 0, 0), (1, 1, 1), (1, 1, 1)], controls=[0, 0.1, 0.8, 1]),
     ]
     with open(tmp_path / "test2.json", "w") as f_p:
-        json.dump(cmap_list, f_p, cls=NMEEncoder)
+        json.dump(cmap_list, f_p, cls=Encoder)
 
     with open(tmp_path / "test2.json") as f_p:
-        cmap_list2 = json.load(f_p, object_hook=nme_object_hook)
+        cmap_list2 = json.load(f_p, object_hook=object_hook)
 
     assert np.array_equal(cmap_list[0].colors, cmap_list2[0].colors)
     assert np.array_equal(cmap_list[0].controls, cmap_list2[0].controls)
@@ -84,7 +84,7 @@ def test_colormap_dump(tmp_path):
 @pytest.mark.parametrize("dtype", [np.uint8, np.uint16, np.uint32, np.float32, np.float64])
 def test_dump_numpy_types(dtype):
     data = {"a": dtype(2)}
-    text = json.dumps(data, cls=NMEEncoder)
+    text = json.dumps(data, cls=Encoder)
     loaded = json.loads(text)
     assert loaded["a"] == 2
 
@@ -94,9 +94,9 @@ class TestNMEEncoder:
     def test_enum_serialize(self, tmp_path):
         data = {"value1": RadiusType.R2D, "value2": RadiusType.NO, "value3": NotificationSeverity.ERROR}
         with (tmp_path / "test.json").open("w") as f_p:
-            json.dump(data, f_p, cls=NMEEncoder)
+            json.dump(data, f_p, cls=Encoder)
         with (tmp_path / "test.json").open("r") as f_p:
-            data2 = json.load(f_p, object_hook=nme_object_hook)
+            data2 = json.load(f_p, object_hook=object_hook)
         assert data2["value1"] == RadiusType.R2D
         assert data2["value2"] == RadiusType.NO
         assert data2["value3"] == NotificationSeverity.ERROR
@@ -104,9 +104,9 @@ class TestNMEEncoder:
     def test_dataclass_serialze(self, tmp_path):
         data = {"value": SampleDataclass(1, "text")}
         with (tmp_path / "test.json").open("w") as f_p:
-            json.dump(data, f_p, cls=NMEEncoder)
+            json.dump(data, f_p, cls=Encoder)
         with (tmp_path / "test.json").open("r") as f_p:
-            data2 = json.load(f_p, object_hook=nme_object_hook)
+            data2 = json.load(f_p, object_hook=object_hook)
 
         assert isinstance(data2["value"], SampleDataclass)
         assert data2["value"] == SampleDataclass(1, "text")
@@ -118,9 +118,9 @@ class TestNMEEncoder:
             "other": SamplePydantic(sample_int=1, sample_str="text", sample_dataclass=SampleDataclass(1, "text")),
         }
         with (tmp_path / "test.json").open("w") as f_p:
-            json.dump(data, f_p, cls=NMEEncoder)
+            json.dump(data, f_p, cls=Encoder)
         with (tmp_path / "test.json").open("r") as f_p:
-            data2 = json.load(f_p, object_hook=nme_object_hook)
+            data2 = json.load(f_p, object_hook=object_hook)
         assert data2["color1"] == Colormap(colors=[[0, 0, 0], [0, 0, 0]], controls=[0, 1])
         assert isinstance(data2["other"], SamplePydantic)
         assert isinstance(data2["other"].sample_dataclass, SampleDataclass)
@@ -128,9 +128,9 @@ class TestNMEEncoder:
     def test_numpy_serialize(self, tmp_path):
         data = {"arr": np.arange(10), "f": np.float32(0.1), "i": np.int16(1000)}
         with (tmp_path / "test.json").open("w") as f_p:
-            json.dump(data, f_p, cls=NMEEncoder)
+            json.dump(data, f_p, cls=Encoder)
         with (tmp_path / "test.json").open("r") as f_p:
-            data2 = json.load(f_p, object_hook=nme_object_hook)
+            data2 = json.load(f_p, object_hook=object_hook)
         assert data2["arr"] == list(range(10))
         assert np.isclose(data["f"], 0.1)
         assert data2["i"] == 1000
@@ -138,9 +138,9 @@ class TestNMEEncoder:
     def test_class_with_as_dict(self, tmp_path):
         data = {"d": SampleAsDict(1, 10)}
         with (tmp_path / "test.json").open("w") as f_p:
-            json.dump(data, f_p, cls=NMEEncoder)
+            json.dump(data, f_p, cls=Encoder)
         with (tmp_path / "test.json").open("r") as f_p:
-            data2 = json.load(f_p, object_hook=nme_object_hook)
+            data2 = json.load(f_p, object_hook=object_hook)
         assert isinstance(data2["d"], SampleAsDict)
         assert data2["d"].value1 == data["d"].value1
         assert data2["d"].value2 == data["d"].value2
@@ -148,9 +148,9 @@ class TestNMEEncoder:
     def test_sub_class_serialization(self, tmp_path):
         ob = DummyClassForTest.DummySubClassForTest(1, 2)
         with (tmp_path / "test.json").open("w") as f_p:
-            json.dump(ob, f_p, cls=NMEEncoder)
+            json.dump(ob, f_p, cls=Encoder)
         with (tmp_path / "test.json").open("r") as f_p:
-            ob2 = json.load(f_p, object_hook=nme_object_hook)
+            ob2 = json.load(f_p, object_hook=object_hook)
         assert ob2.data1 == 1
         assert ob2.data2 == 2
 
@@ -183,9 +183,9 @@ def test_add_class_info_enum(clean_register):
 
 def test_path_serialization(tmp_path):
     with (tmp_path / "test.json").open("w") as f_p:
-        json.dump(Path(), f_p, cls=NMEEncoder)
+        json.dump(Path(), f_p, cls=Encoder)
     with (tmp_path / "test.json").open("r") as f_p:
-        data = json.load(f_p, object_hook=nme_object_hook)
+        data = json.load(f_p, object_hook=object_hook)
     assert str(Path()) == data
 
 
@@ -199,16 +199,16 @@ def test_error_deserialization(clean_register, tmp_path):
             '"__class_version_dkt__": {"test_json_hooks.test_error_deserialization.<locals>.SampleEnum": "0.0.0"}}'
         )
     with (tmp_path / "test.json").open("r") as f_p:
-        data2 = json.load(f_p, object_hook=nme_object_hook)
+        data2 = json.load(f_p, object_hook=object_hook)
     assert "__error__" in data2
 
     register_class(SampleEnum)
 
     with (tmp_path / "test2.json").open("w") as f_p:
-        json.dump(data2, f_p, cls=NMEEncoder)
+        json.dump(data2, f_p, cls=Encoder)
 
     with (tmp_path / "test2.json").open("r") as f_p:
-        data3 = json.load(f_p, object_hook=nme_object_hook)
+        data3 = json.load(f_p, object_hook=object_hook)
 
     assert data3 == SampleEnum.field
 
@@ -235,7 +235,7 @@ class TestNMEObjectHook:
          }}
          """
 
-        ob = json.loads(data_str, object_hook=nme_object_hook)
+        ob = json.loads(data_str, object_hook=object_hook)
         assert isinstance(ob, MainClass)
 
     def test_error_in_object_restore(self, clean_register):
@@ -259,7 +259,7 @@ class TestNMEObjectHook:
         "__values__": {"field": 1, "eee": 1}}}}
         """
 
-        ob = json.loads(data_str, object_hook=nme_object_hook)
+        ob = json.loads(data_str, object_hook=object_hook)
         assert isinstance(ob, dict)
         assert "__error__" in ob
         assert ob["__error__"] == "Error in fields: sub11"

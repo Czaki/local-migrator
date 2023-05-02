@@ -11,6 +11,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Un
 from packaging.version import Version
 from packaging.version import parse as parse_version
 
+MRO_NO_SUPERCLASS = 2
+
 
 def class_to_str(cls) -> str:
     """Get full qualified name for a given class."""
@@ -22,7 +24,7 @@ def class_to_str(cls) -> str:
 
 def get_super_class(cls: Type) -> Optional[Type]:
     """Get parent class for a given class"""
-    if len(cls.__mro__) < 2:
+    if len(cls.__mro__) < MRO_NO_SUPERCLASS:
         return None
     if cls.__module__.startswith("pydantic.dataclass"):
         # Not covered by tests, because I cannot reproduce problem that causes this.
@@ -85,12 +87,12 @@ class MigrationRegistration:
     def __init__(self):
         self._data_dkt: Dict[str, TypeInfo] = {}
 
-    def register(
+    def register(  # noqa: PLR0913
         self,
-        cls: Type = None,
+        cls: Optional[Type] = None,
         version: Union[str, Version] = "0.0.0",
-        migrations: List[MigrationStartInfo] = None,
-        old_paths: List[str] = None,
+        migrations: Optional[List[MigrationStartInfo]] = None,
+        old_paths: Optional[List[str]] = None,
         use_parent_migrations: bool = True,
         allow_errors_in_values: bool = False,
     ) -> RegisterReturnType:
@@ -108,10 +110,7 @@ class MigrationRegistration:
         :return: class itself if cls parameter is provided. Otherwise,
             one argument function which will consume Type to be registered.
         """
-        if migrations is None:
-            migrations = []
-        else:
-            migrations = list(sorted((str_to_version(x), y) for x, y in migrations))
+        migrations = [] if migrations is None else sorted((str_to_version(x), y) for x, y in migrations)
         if old_paths is None:
             old_paths = []
         version = str_to_version(version)
@@ -307,11 +306,11 @@ def update_argument(argument_name):
     return _wrapper
 
 
-def register_class(
+def register_class(  # noqa: PLR0913
     cls: Optional[Type[T]] = None,
     version: Union[str, Version] = "0.0.0",
-    migrations: List[MigrationStartInfo] = None,
-    old_paths: List[str] = None,
+    migrations: Optional[List[MigrationStartInfo]] = None,
+    old_paths: Optional[List[str]] = None,
     use_parent_migrations: bool = True,
     allow_errors_in_values: bool = False,
 ) -> RegisterReturnType:

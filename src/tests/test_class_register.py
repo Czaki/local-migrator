@@ -3,8 +3,8 @@ from typing import Any, Dict
 
 import pytest
 
-from nme import REGISTER, register_class, rename_key, update_argument
-from nme._class_register import class_to_str
+from local_migrator import REGISTER, register_class, rename_key, update_argument
+from local_migrator._class_register import class_to_str
 
 
 @register_class
@@ -146,7 +146,7 @@ def test_wrong_version(clean_register):
     class SampleEnum(Enum):
         value1 = 1
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="class version lower than in migrations"):
         register_class("0.0.0", migrations=[("0.0.1", lambda x: x)])(SampleEnum)
 
 

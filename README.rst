@@ -1,29 +1,29 @@
-***********************
-Napari Migration Engine
-***********************
+**************
+Local Migrator
+**************
 
-.. image:: https://codecov.io/gh/Czaki/nme/branch/main/graph/badge.svg?token=KGEGEQYYRH
-  :target: https://codecov.io/gh/Czaki/nme
+.. image:: https://codecov.io/gh/Czaki/local_migrator/branch/main/graph/badge.svg?token=KGEGEQYYRH
+  :target: https://codecov.io/gh/Czaki/local_migrator
   :alt: Codecov
 
-.. image:: https://github.com/Czaki/nme/actions/workflows/tests.yml/badge.svg
-  :target: https://github.com/Czaki/nme/actions/workflows/tests.yml
+.. image:: https://github.com/Czaki/local_migrator/actions/workflows/tests.yml/badge.svg
+  :target: https://github.com/Czaki/local_migrator/actions/workflows/tests.yml
   :alt: Test
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
   :target: https://github.com/psf/black
   :alt: Code Style
 
-.. image:: https://readthedocs.org/projects/nme/badge/?version=latest
-  :target: https://nme.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/local_migrator/badge/?version=latest
+  :target: https://local_migrator.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
-.. image:: https://badge.fury.io/py/nme.svg
-  :target: https://badge.fury.io/py/nme
+.. image:: https://badge.fury.io/py/local_migrator.svg
+  :target: https://badge.fury.io/py/local_migrator
   :alt: PyPI version
 
-.. image:: https://anaconda.org/conda-forge/nme/badges/version.svg
-  :target: https://anaconda.org/conda-forge/nme
+.. image:: https://anaconda.org/conda-forge/local_migrator/badges/version.svg
+  :target: https://anaconda.org/conda-forge/local_migrator
   :alt: Anaconda version
 
 
@@ -44,7 +44,7 @@ If You only need to serialize data, then you could use only JSON hooks
     import json
 
     from pydantic import BaseModel
-    from nme import NMEEncoder, nme_object_hook
+    from local_migrator import Encoder, object_hook
 
 
     class SampleModel(BaseModel):
@@ -55,10 +55,10 @@ If You only need to serialize data, then you could use only JSON hooks
     data = SampleModel(field1=4, field2="abc")
 
     with open("sample.json", "w") as f_p:
-        json.dump(data, f_p, cls=NMEEncoder)
+        json.dump(data, f_p, cls=Encoder)
 
     with open("sample.json") as f_p:
-        data2 = json.load(f_p, object_hook=nme_object_hook)
+        data2 = json.load(f_p, object_hook=object_hook)
 
     assert data == data2
 
@@ -81,7 +81,7 @@ Lets imagine that we have such code
 
 .. code-block:: python
 
-    from nme import NMEEncoder, nme_object_hook
+    from local_migrator import Encoder, object_hook
 
     class SampleModel(BaseModel):
         field1: int
@@ -89,7 +89,7 @@ Lets imagine that we have such code
         field_ca_2: float
 
     with open("sample.json", "w") as f_p:
-        json.dump(data, f_p, cls=NMEEncoder)
+        json.dump(data, f_p, cls=Encoder)
 
 But there is decision to move both ``ca`` field to sub structure:
 
@@ -104,11 +104,11 @@ But there is decision to move both ``ca`` field to sub structure:
         field_ca: CaModel
 
 
-Then with ``nme`` code may look:
+Then with ``local_migrator`` code may look:
 
 .. code-block:: python
 
-    from nme import nme_object_hook, register_class
+    from local_migrator import object_hook, register_class
 
     class CaModel(BaseModel):
         field_1: str
@@ -125,14 +125,14 @@ Then with ``nme`` code may look:
         field_ca: CaModel
 
     with open("sample.json") as f_p:
-        data = json.load(f_p, object_hook=nme_object_hook)
+        data = json.load(f_p, object_hook=object_hook)
 
 Assume that there is decision to rename ``field1`` to ``id``.
 Then code may look:
 
 .. code-block:: python
 
-    from nme import nme_object_hook, register_class, rename_key
+    from local_migrator import object_hook, register_class, rename_key
 
     class CaModel(BaseModel):
         field_1: str
@@ -149,7 +149,7 @@ Then code may look:
         field_ca: CaModel
 
     with open("sample.json") as f_p:
-        data = json.load(f_p, object_hook=nme_object_hook)
+        data = json.load(f_p, object_hook=object_hook)
 
 
 More examples could be found in `examples`_ section of documentation
@@ -179,4 +179,4 @@ project for simplify reuse it in another projects.
 
 
 .. _PartSeg: https://github.com/4DNucleome/PartSeg
-.. _examples: https://nme.readthedocs.io/en/latest/examples.html
+.. _examples: https://local_migrator.readthedocs.io/en/latest/examples.html
