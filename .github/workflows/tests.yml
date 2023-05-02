@@ -74,10 +74,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          ls
-          ls ..
-          python -m pip ./local_migrator[test,cbor]
-          python -m pip ./nme
+          python -m pip install ./local_migrator[test,cbor]
+          python -m pip install ./nme
 
       - name: Test with tox
         run: python -m pytest nme/src/tests
