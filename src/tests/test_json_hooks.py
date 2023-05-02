@@ -8,8 +8,7 @@ import numpy as np
 import pytest
 from pydantic import BaseModel, Extra, dataclasses
 
-from local_migrator import Encoder, object_hook, register_class, rename_key
-from local_migrator._class_register import class_to_str
+from local_migrator import Encoder, class_to_str, object_hook, register_class, rename_key
 from local_migrator._serialize_hooks import add_class_info
 
 try:

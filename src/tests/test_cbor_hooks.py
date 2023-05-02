@@ -5,8 +5,7 @@ import cbor2
 import pytest
 from pydantic import BaseModel
 
-from local_migrator import cbor_decoder, cbor_encoder, register_class, rename_key
-from local_migrator._class_register import class_to_str
+from local_migrator import cbor_decoder, cbor_encoder, class_to_str, register_class, rename_key
 
 
 class RadiusType(Enum):
