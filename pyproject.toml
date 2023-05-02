@@ -62,6 +62,11 @@ testpaths = [
     "src/tests",
 ]
 
+[tool.setuptools.packages.find]
+where = ["src"]  # list of folders that contain the packages (["."] by default)
+exclude = ["tests"]  # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
+
 [tool.setuptools_scm]
 write_to = "src/local_migrator/version.py"
 
