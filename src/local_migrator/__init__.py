@@ -1,3 +1,5 @@
+from importlib import metadata
+
 from ._class_register import (
     REGISTER,
     MigrationInfo,
@@ -11,14 +13,18 @@ from ._serialize_hooks import Encoder, check_for_errors_in_dkt_values, object_en
 from .version import version as __version__
 
 try:
-    import nme
-except ImportError:
+    nme_version = metadata.version("nme")
+except metadata.PackageNotFoundError:
     pass
-else:
+else:  # pragma: no cover
     from packaging.version import parse
 
-    if parse(nme.__version__) <= parse("0.1.6"):
+    if parse(nme_version) <= parse("0.1.6"):
         raise ImportError("local_migrator is incompatible with nme<=0.1.6. You need to upgrade or uninstall nme.")
+    del parse
+    del nme_version
+
+del metadata
 
 
 def cbor_encoder(encoder, value):
