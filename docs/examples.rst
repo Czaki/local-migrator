@@ -4,7 +4,7 @@ Examples
 Class inheritance and migrations
 ################################
 
-By default ``nme`` uses migrations of parent class if defined:
+By default ``local-migrator`` uses migrations of parent class if defined:
 
 Lets see this code sample:
 
@@ -13,7 +13,7 @@ Lets see this code sample:
     import json
     from datetime import date
     from pydantic import BaseModel
-    from nme import NMEEncoder
+    from local_migrator import Encoder
 
     class Person(BaseModel):
         name: str
@@ -22,10 +22,10 @@ Lets see this code sample:
     class Employee(Person):
         company: str
 
-    data = Employee(name="John Smith", birth_date=date(1980, 1, 15), company="Nme")
+    data = Employee(name="John Smith", birth_date=date(1980, 1, 15), company="napari")
 
     with open("employee.json", "w") as f:
-        json.dump(data, f, cls=NmeEncoder)
+        json.dump(data, f, cls=Encoder)
 
 Assume that one would like to split ``Person.name`` into
 two fields: ``names`` and ``last_name``.
@@ -37,7 +37,7 @@ Also there is a need to load data from previous version. Following code will do 
     import json
     from datetime import date
     from pydantic import BaseModel
-    from nme import nme_object_hook, register_class
+    from local_migrator import object_hook, register_class
 
     def _migrate_person(dkt):
         dkt = dict(dkt) # copy for safety
@@ -58,10 +58,10 @@ Also there is a need to load data from previous version. Following code will do 
     class Employee(Person):
         company: str
 
-    data = Employee(names="John", last_name="Smith", birth_date=date(1980, 1, 15), company="Nme")
+    data = Employee(names="John", last_name="Smith", birth_date=date(1980, 1, 15), company="napari")
 
     with open("employee.json",) as f:
-        data2 = json.load(f, object_hook=nme_object_hook)
+        data2 = json.load(f, object_hook=object_hook)
 
     assert data == data2
 
@@ -99,7 +99,7 @@ To keep backward compatibility we can wrote following code:
 
     from typing import Dict
     from pydantic import BaseModel
-    from nme import update_argument
+    from local_migrator import update_argument
 
     class MyArgument(BaseModel):
         a: int = 1
@@ -118,14 +118,14 @@ determine argument class.
 CBOR support
 ############
 
-``cbor2`` encoder (``nme_object_encoder``) and object hook
-(``nme_cbor_decoder``) are available.
+``cbor2`` encoder (``cbor_encoder``) and object hook
+(``cbor_decoder``) are available.
 
 .. code-block:: python
 
     import cbor2
     from pydantic import BaseModel
-    from nme import nme_cbor_encoder, nme_cbor_decoder
+    from local_migrator import cbor_encoder, cbor_decoder
 
 
     class SampleModel(BaseModel):
@@ -136,9 +136,9 @@ CBOR support
     data = SampleModel(field1=4, field2="abc")
 
     with open("sample.cbor", "wb") as f_p:
-        cbor2.dump(data, f_p, default=nme_cbor_encoder)
+        cbor2.dump(data, f_p, default=cbor_encoder)
 
     with open("sample.cbor", "rb") as f_p:
-        data2 = cbor2.load(f_p, object_hook=nme_cbor_decoder)
+        data2 = cbor2.load(f_p, object_hook=cbor_decoder)
 
     assert data == data2

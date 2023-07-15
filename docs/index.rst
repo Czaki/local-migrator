@@ -3,15 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root ``toctree`` directive.
 
-Welcome to nme's documentation!
-===============================
+Welcome to local-migrator's documentation!
+==========================================
 
-``nme`` is package for support of data persistance between sessions
+``local-migrator`` is package for support of data persistance between sessions
 and versions.
 Currently it support for :py:mod:`json` and :py:mod:`cbor2` backends.
 
-``nme`` support serialize and deserialize following class and its subclasses:
-(referring to :py:func:`nme.nme_object_encoder`):
+``local-migrator`` support serialize and deserialize following class and its subclasses:
+(referring to :py:func:`local_migrator.object_encoder`):
 
 * :py:class:`enum.Enum`
 * :py:func:`dataclasses.dataclass`

@@ -1,10 +1,10 @@
 API
 ===
 
-.. automodule:: nme
+.. automodule:: local_migrator
    :members:
    :show-inheritance:
 
    .. autodata:: REGISTER
    .. autodata:: MigrationInfo
-   .. autofunction:: nme_object_encoder
+   .. autofunction:: object_encoder

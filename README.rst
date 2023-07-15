@@ -22,9 +22,9 @@ Local Migrator
   :target: https://badge.fury.io/py/local-migrator
   :alt: PyPI version
 
-.. image:: https://anaconda.org/conda-forge/local_migrator/badges/version.svg
-  :target: https://anaconda.org/conda-forge/local_migrator
-  :alt: Anaconda version
+.. image:: https://anaconda.org/conda-forge/local-migrator/badges/version.svg
+   :target: https://anaconda.org/conda-forge/local-migrator
+   :alt: Conda-forge version
 
 
 This support package simplifies data persistence between user sessions
@@ -181,4 +181,4 @@ project for simplify reuse it in another projects.
 
 
 .. _PartSeg: https://github.com/4DNucleome/PartSeg
-.. _examples: https://local_migrator.readthedocs.io/en/latest/examples.html
+.. _examples: https://local-migrator.readthedocs.io/en/latest/examples.html
