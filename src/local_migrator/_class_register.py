@@ -1,6 +1,7 @@
 """
 This module contains utility for registration migration information for class.
 """
+
 import importlib
 import inspect
 import warnings
