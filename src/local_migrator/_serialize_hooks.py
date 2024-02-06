@@ -18,7 +18,7 @@ try:
     from pydantic.v1 import BaseModel as BaseModelV1
 except ImportError:
 
-    class BaseModelV1:
+    class BaseModelV1:  # type: ignore  [no-redef]
         pass
 
 
