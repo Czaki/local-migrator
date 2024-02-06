@@ -15,6 +15,14 @@ except ImportError:  # pragma: no cover
 
 
 try:
+    from pydantic.v1 import BaseModel as BaseModelV1
+except ImportError:
+
+    class BaseModelV1:  # type: ignore  [no-redef]
+        pass
+
+
+try:
     from numpy import floating, integer, ndarray
 except ImportError:  # pragma: no cover
     # allow to use in environment without numpy.
@@ -80,7 +88,7 @@ def object_encoder(obj: typing.Any):  # noqa: PLR0911
     if isinstance(obj, ndarray):
         return obj.tolist()
 
-    if isinstance(obj, BaseModel):
+    if isinstance(obj, (BaseModel, BaseModelV1)):
         try:
             dkt = dict(obj)
         except (ValueError, TypeError):
