@@ -13,9 +13,11 @@ except ImportError:  # pragma: no cover
     class BaseModel:  # type: ignore  [no-redef]
         pass
 
+
 try:
     from pydantic.v1 import BaseModel as BaseModelV1
 except ImportError:
+
     class BaseModelV1:
         pass
 
