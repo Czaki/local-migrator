@@ -21,7 +21,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -43,7 +43,7 @@ jobs:
     name: "Test if nme properly fail on old releases"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -60,11 +60,11 @@ jobs:
     name: "Test if nme properly work as compatibility layer"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: "local_migrator_repo"
           fetch-depth: 0
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: "czaki/nme"
           path: "nme_repo"
@@ -91,7 +91,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
