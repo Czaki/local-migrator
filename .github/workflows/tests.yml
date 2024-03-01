@@ -37,7 +37,7 @@ jobs:
         run: python -m tox
 
       - name: Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
 
   nme_fail:
     name: "Test if nme properly fail on old releases"
