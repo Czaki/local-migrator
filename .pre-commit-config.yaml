@@ -4,11 +4,11 @@ default_language_version:
     python: python3.8
 repos:
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.0
+    rev: v0.5.6
     hooks:
       - id: ruff
 -   repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 24.8.0
     hooks:
     - id: black
       pass_filenames: true
@@ -29,6 +29,6 @@ repos:
     -   id: rst-backticks
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.10.1'  # Use the sha / tag you want to point at
+    rev: 'v1.11.1'  # Use the sha / tag you want to point at
     hooks:
     -   id: mypy
