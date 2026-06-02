@@ -54,6 +54,17 @@ def test_simple(tmp_path):
     assert data2 == data
 
 
+def test_cbor_decoder_signature_compatibility():
+    # New cbor2 callback convention: (value, immutable)
+    assert cbor_decoder({"aa": 1}, False) == {"aa": 1}
+
+    # Legacy cbor2 callback convention: (decoder, value)
+    class _DummyDecoder:
+        pass
+
+    assert cbor_decoder(_DummyDecoder(), {"bb": 2}) == {"bb": 2}
+
+
 def test_hook_failure(tmp_path):
     class DummyClass:
         def __init__(self):
