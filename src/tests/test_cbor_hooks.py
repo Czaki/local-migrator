@@ -31,6 +31,9 @@ class SampleAsDict:
         self.value1 = value1
         self.value2 = value2
 
+    def __hash__(self):
+        return hash((self.value1, self.value2))
+
     def as_dict(self):
         return {"value1": self.value1, "value2": self.value2}
 
@@ -49,6 +52,17 @@ def test_simple(tmp_path):
     with open(tmp_path / "test.cbor", "rb") as f_p:
         data2 = cbor2.load(f_p, object_hook=cbor_decoder)
     assert data2 == data
+
+
+def test_cbor_decoder_signature_compatibility():
+    # New cbor2 callback convention: (value, immutable)
+    assert cbor_decoder({"aa": 1}, False) == {"aa": 1}
+
+    # Legacy cbor2 callback convention: (decoder, value)
+    class _DummyDecoder:
+        pass
+
+    assert cbor_decoder(_DummyDecoder(), {"bb": 2}) == {"bb": 2}
 
 
 def test_hook_failure(tmp_path):

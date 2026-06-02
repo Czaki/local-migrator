@@ -45,12 +45,18 @@ def cbor_encoder(encoder, value):
     return encoder.encode(res)
 
 
-def cbor_decoder(decoder, value):  # noqa: ARG001
+def cbor_decoder(*args):
     """
     Cbor decoder hook. Use :py:func:`nme_object_hook` to decode objects.
 
-    :param decoder: cbor2.Decoder
-    :param value: object to be decoded
+    Callback signature changed across cbor2 releases:
+
+    * Older versions call it as ``(decoder, value)``.
+    * Newer versions call it as ``(value, immutable)``.
+
+    This wrapper supports both conventions.
+
+    :param args: callback arguments from cbor2
 
     Examples::
 
@@ -58,6 +64,13 @@ def cbor_decoder(decoder, value):  # noqa: ARG001
             data = cbor2.load(f_p, object_hook=nme_cbor_decoder)
 
     """
+    value = None
+    for arg in args:
+        if isinstance(arg, dict):
+            value = arg
+            break
+    if value is None:  # pragma: no cover
+        raise TypeError(f"Cannot decode CBOR object with arguments: {args!r}")
     return object_hook(value)
 
 
@@ -68,21 +81,21 @@ nme_cbor_decoder = cbor_decoder
 
 
 __all__ = (
-    "class_to_str",
-    "check_for_errors_in_dkt_values",
-    "register_class",
-    "object_hook",
-    "nme_object_hook",
-    "rename_key",
+    "REGISTER",
+    "Encoder",
     "MigrationInfo",
     "MigrationRegistration",
-    "Encoder",
     "NMEEncoder",
-    "REGISTER",
-    "update_argument",
-    "cbor_encoder",
-    "cbor_decoder",
-    "nme_cbor_encoder",
-    "nme_cbor_decoder",
     "__version__",
+    "cbor_decoder",
+    "cbor_encoder",
+    "check_for_errors_in_dkt_values",
+    "class_to_str",
+    "nme_cbor_decoder",
+    "nme_cbor_encoder",
+    "nme_object_hook",
+    "object_hook",
+    "register_class",
+    "rename_key",
+    "update_argument",
 )
