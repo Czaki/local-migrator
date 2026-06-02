@@ -31,6 +31,9 @@ class SampleAsDict:
         self.value1 = value1
         self.value2 = value2
 
+    def __hash__(self):
+        return hash((self.value1, self.value2))
+
     def as_dict(self):
         return {"value1": self.value1, "value2": self.value2}
 

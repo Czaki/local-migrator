@@ -1,19 +1,17 @@
 ci:
     autoupdate_schedule: monthly
-default_language_version:
-    python: python3.8
 repos:
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.0
+    rev: v0.15.15
     hooks:
       - id: ruff
 -   repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 26.5.1
     hooks:
     - id: black
       pass_filenames: true
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
     - id: check-json
     - id: check-yaml
@@ -29,6 +27,6 @@ repos:
     -   id: rst-backticks
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.10.1'  # Use the sha / tag you want to point at
+    rev: 'v2.1.0'  # Use the sha / tag you want to point at
     hooks:
     -   id: mypy
