@@ -69,7 +69,7 @@ def cbor_decoder(*args):
         if isinstance(arg, dict):
             value = arg
             break
-    if value is None:
+    if value is None:  # pragma: no cover
         raise TypeError(f"Cannot decode CBOR object with arguments: {args!r}")
     return object_hook(value)
 
