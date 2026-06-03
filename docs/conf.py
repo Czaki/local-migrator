@@ -18,8 +18,8 @@ from local_migrator.version import version
 
 # -- Project information -----------------------------------------------------
 
-project = "nme"
-copyright = "2022, Grzegorz Bokota"
+project = "local-migrator"
+copyright = "2026, Grzegorz Bokota"
 author = "Grzegorz Bokota"
 
 # The full version, including alpha/beta/rc tags
