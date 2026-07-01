@@ -18,8 +18,8 @@ from local_migrator.version import version
 
 # -- Project information -----------------------------------------------------
 
-project = "nme"
-copyright = "2022, Grzegorz Bokota"
+project = "local-migrator"
+copyright = "2026, Grzegorz Bokota"
 author = "Grzegorz Bokota"
 
 # The full version, including alpha/beta/rc tags
@@ -52,7 +52,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "napari"
+html_theme = "pydata_sphinx_theme"
+html_title = "local-migrator"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
